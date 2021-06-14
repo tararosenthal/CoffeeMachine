@@ -14,8 +14,7 @@ public class RunMachine {
     public static void processInput(CoffeeMachine coffeeMachine) {
         while (!exit) {
             System.out.print(chooseString);
-            try {
-                switch (MachineState.valueOf(scanner.nextLine().trim().toUpperCase())) {
+                switch (ValidInput.validMachineState(scanner.nextLine())) {
                     case BUY:
                         buyCoffee(coffeeMachine);
                         break;
@@ -31,39 +30,32 @@ public class RunMachine {
                     case EXIT:
                         exit = true;
                         break;
+                    case INVALID:
+                        System.out.println("Invalid input. Try again.");
+                        break;
                 }
-            } catch (IllegalArgumentException e) {
-                System.out.println("Invalid input");
-            }
         }
     }
 
     public static void buyCoffee(CoffeeMachine coffeeMachine) {
-        String temp = "";
+       String input;
+       currentCoffee = null;
 
-        try {
-            do {
-                System.out.print(buyString);
-                temp = scanner.nextLine().trim().toLowerCase();
-            } while(!temp.equals("back") && !temp.equals("1") && !temp.equals("2") && !temp.equals("3"));
-        } catch (Exception e) {
-            System.out.println("Invalid input");
-        }
+        do {
+            System.out.print(buyString);
+            input = scanner.nextLine();
+            if (ValidInput.isNotBack(input)) {
+                currentCoffee = ValidInput.validCoffee(input);
+                if (currentCoffee == null) {
+                    System.out.println("Invalid input. Try again.");
+                } else {
+                    makeCoffee(coffeeMachine);
+                }
+            }
+        } while (ValidInput.isNotBack(input) && currentCoffee == null);
+    }
 
-        switch (temp) {
-            case "back":
-                return;
-            case "1":
-                currentCoffee = Coffee.ESPRESSO;
-                break;
-            case "2":
-                currentCoffee = Coffee.LATTE;
-                break;
-            case "3":
-                currentCoffee = Coffee.CAPPUCCINO;
-                break;
-        }
-
+    public static void makeCoffee(CoffeeMachine coffeeMachine) {
         if (coffeeMachine.checkSupplies(currentCoffee) == null) {
             System.out.print(enoughString);
             coffeeMachine.makeCoffee(currentCoffee);
@@ -73,30 +65,30 @@ public class RunMachine {
     }
 
     public static void fillMachine(CoffeeMachine coffeeMachine) {
-        String temp;
-        System.out.println();
+        String input;
+        int temp;
 
         for (Supplies s : Supplies.values()) {
-            try {
-                do {
-                    switch (s) {
-                        case WATER:
-                        case MILK:
-                            System.out.printf("Write how many ml of %s you want to add:\n" + "> ", s);
-                            break;
-                        case COFFEE_BEANS:
-                            System.out.printf("Write how many grams of %s you want to add:\n" + "> ", s);
-                            break;
-                        case CUPS:
-                            System.out.printf("Write how many disposable %s of coffee you want to add:\n" + "> ", s);
-                            break;
+            do {
+                switch (s) {
+                    case WATER:
+                    case MILK:
+                        System.out.printf("\nWrite how many ml of %s you want to add:\n" + "> ", s);
+                        break;
+                    case COFFEE_BEANS:
+                        System.out.printf("\nWrite how many grams of %s you want to add:\n" + "> ", s);
+                        break;
+                    case CUPS:
+                        System.out.printf("\nWrite how many disposable %s of coffee you want to add:\n" + "> ", s);
+                        break;
                     }
-                    temp = scanner.nextLine();
-                } while(!temp.chars().allMatch(Character::isDigit) || temp.length() > 9);
-                coffeeMachine.addSupplies(s, Integer.parseInt(temp));
-            } catch (Exception e) {
-                System.out.print("Invalid input");
-            }
+                    input = scanner.nextLine();
+                    temp = ValidInput.validNumber(input);
+                    if (temp < 0) {
+                        System.out.println("Please enter a valid number.");
+                    }
+                } while(temp < 0);
+                coffeeMachine.addSupplies(s, temp);
         }
     }
 
