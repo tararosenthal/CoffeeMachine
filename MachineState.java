@@ -6,4 +6,5 @@ public enum MachineState {
     TAKE,
     REMAINING,
     EXIT,
+    INVALID
 }
