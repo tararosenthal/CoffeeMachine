@@ -83,7 +83,7 @@ public class RunMachine {
                     }
                     temp = ValidInput.validNumber(scanner.nextLine());
                     if (temp < 0) {
-                        System.out.println("Please enter a valid number.");
+                        System.out.println("Please enter a number between 0 - 999999999.");
                     }
                 } while(temp < 0);
                 coffeeMachine.addSupplies(s, temp);
