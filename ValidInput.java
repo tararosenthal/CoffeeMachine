@@ -36,8 +36,8 @@ public class ValidInput {
     }
 
     public static int validNumber(String input) {
-        if (isIntNumber(input)) {
-            return Integer.parseInt(input);
+        if (isIntNumber(input.trim())) {
+            return Integer.parseInt(input.trim());
         } else {
             return -1;
         }
