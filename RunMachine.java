@@ -65,7 +65,6 @@ public class RunMachine {
     }
 
     public static void fillMachine(CoffeeMachine coffeeMachine) {
-        String input;
         int temp;
 
         for (Supplies s : Supplies.values()) {
@@ -82,8 +81,7 @@ public class RunMachine {
                         System.out.printf("\nWrite how many disposable %s of coffee you want to add:\n" + "> ", s);
                         break;
                     }
-                    input = scanner.nextLine();
-                    temp = ValidInput.validNumber(input);
+                    temp = ValidInput.validNumber(scanner.nextLine());
                     if (temp < 0) {
                         System.out.println("Please enter a valid number.");
                     }
